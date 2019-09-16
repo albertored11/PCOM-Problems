@@ -11,6 +11,7 @@ void resuelve(int index) {
 
 	vector<unordered_set<int>> chocosExclusivos;
 	vector<unordered_set<int>> chocosFaltantes;
+	unordered_set<int> chocosFaltantes3Borrados;
 
 	for (int i = 0; i < 3; ++i) {
 		unordered_set<int> chocos;
@@ -46,7 +47,7 @@ void resuelve(int index) {
 			chocosExclusivos[0].erase(choco);
 			chocosFaltantes[2].insert(choco);
 		}
-		else
+		else if (chocosFaltantes[2].count(choco) == 0)
 			chocosExclusivos[1].insert(choco);
 
 	}
@@ -65,9 +66,11 @@ void resuelve(int index) {
 			chocosExclusivos[1].erase(choco);
 			chocosFaltantes[0].insert(choco);
 		}
-		else if (chocosFaltantes[2].count(choco) == 1)
+		else if (chocosFaltantes[2].count(choco) == 1) {
 			chocosFaltantes[2].erase(choco);
-		else
+			chocosFaltantes3Borrados.insert(choco);
+		}
+		else if (chocosFaltantes[1].count(choco) == 0 && chocosFaltantes[0].count(choco) == 0 && chocosFaltantes3Borrados.count(choco) == 0)
 			chocosExclusivos[2].insert(choco);
 
 	}
