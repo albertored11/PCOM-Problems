@@ -1,36 +1,8 @@
-// Primera versión. Da MLE porque guarda los datos en memoria.
+// Segunda versión. Da WA, pero no encuentro un caso que falle.
 
 #include <iostream>
-#include <queue>
 
 using namespace std;
-
-int mayorBeneficio(queue<int> &beneficios, int L) {
-
-	int ret = 0;
-	int beneficioActual = 0;
-
-	while (!beneficios.empty()) {
-
-		beneficioActual += beneficios.front();
-
-		if (L > 0) {
-			beneficios.push(beneficios.front());
-			--L;
-		}
-
-		beneficios.pop();
-
-		if (beneficioActual < 0)
-			beneficioActual = 0;
-		else if (beneficioActual > ret)
-			ret = beneficioActual;
-
-	}
-
-	return ret;
-
-}
 
 bool testCase() {
 
@@ -41,19 +13,42 @@ bool testCase() {
 	if (L == 0)
 		return false;
 
-	queue<int> beneficios;
+	int maximoBeneficio = 0;
+	int prefijo = 0;
+	int sufijo = 0;
+	int beneficioActual = 0;
+	bool empiezaSufijo = false;
 
 	for (int i = 0; i < L; ++i) {
 
-		int b;
+		int benef;
 
-		cin >> b;
+		cin >> benef;
 
-		beneficios.push(b);
+		beneficioActual += benef;
+
+		if (beneficioActual < 0)
+			beneficioActual = 0;
+		else if (beneficioActual > maximoBeneficio)
+			maximoBeneficio = beneficioActual;
+
+		if (prefijo <= 0)
+			prefijo += benef;
+		else if (!empiezaSufijo && benef >= 0) {
+			empiezaSufijo = true;
+			sufijo += benef;
+		}
+		else if (empiezaSufijo)
+			sufijo += benef;
 
 	}
 
-	cout << mayorBeneficio(beneficios, L) << '\n';
+	if (prefijo + sufijo > maximoBeneficio)
+		cout << prefijo + sufijo;
+	else
+		cout << maximoBeneficio;
+
+	cout << '\n';
 
 	return true;
 
