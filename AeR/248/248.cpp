@@ -1,5 +1,3 @@
-// Segunda versión. Da WA, pero no encuentro un caso que falle.
-
 #include <iostream>
 
 using namespace std;
@@ -14,10 +12,10 @@ bool testCase() {
 		return false;
 
 	int maximoBeneficio = 0;
-	int prefijo = 0;
-	int sufijo = 0;
 	int beneficioActual = 0;
-	bool empiezaSufijo = false;
+	int prefijo = 0;
+	int mejorPrefijo = 0;
+	int sufijo = 0;
 
 	for (int i = 0; i < L; ++i) {
 
@@ -32,19 +30,26 @@ bool testCase() {
 		else if (beneficioActual > maximoBeneficio)
 			maximoBeneficio = beneficioActual;
 
-		if (prefijo <= 0)
-			prefijo += benef;
-		else if (!empiezaSufijo && benef >= 0) {
-			empiezaSufijo = true;
-			sufijo += benef;
+		prefijo += benef;
+
+		if (prefijo > mejorPrefijo) {
+			mejorPrefijo = prefijo;
+			sufijo = 0;
 		}
-		else if (empiezaSufijo)
+
+		if (mejorPrefijo > 0) {
+
 			sufijo += benef;
+
+			if (sufijo < 0)
+				sufijo = 0;
+
+		}
 
 	}
 
-	if (prefijo + sufijo > maximoBeneficio)
-		cout << prefijo + sufijo;
+	if (mejorPrefijo + sufijo > maximoBeneficio)
+		cout << mejorPrefijo + sufijo;
 	else
 		cout << maximoBeneficio;
 
