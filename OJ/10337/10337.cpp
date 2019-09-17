@@ -8,11 +8,9 @@ using namespace std;
 const int MAX_ALTITUD = 10;
 const int MAX_DIST = 1000;
 
-int distancia;
-int viento[MAX_ALTITUD][MAX_DIST];
-int gasolinaMinGastada[MAX_ALTITUD][MAX_DIST]; // filas = altitud, columnas = posición
 
-int gasolinaMinima(int posicion, int altitud) {
+
+int gasolinaMinima(int posicion, int altitud, int distancia, int viento[MAX_ALTITUD][MAX_DIST], int gasolinaMinGastada[MAX_ALTITUD][MAX_DIST]) {
 
 	if (posicion == distancia)
 		return viento[9][distancia - 1];
@@ -21,37 +19,46 @@ int gasolinaMinima(int posicion, int altitud) {
 	int mant = INT_MAX;
 	int bajada = INT_MAX;
 
-	if (gasolinaMinGastada[posicion][9 - altitud] != -1)
-		return gasolinaMinGastada[posicion][9 - altitud];
+	if (posicion != 0 && gasolinaMinGastada[9 - altitud][posicion - 1] != -1)
+		return gasolinaMinGastada[9 - altitud][posicion - 1];
+
+	int vientoActual = 0;
+
+	if (posicion != 0)
+		vientoActual = viento[9 - altitud][posicion - 1];
 
 	if (altitud < 9 && distancia - posicion - 1 > altitud) {
 
 		subida = 60
-				- viento[posicion][9 - altitud]
-				+ gasolinaMinima(posicion + 1, altitud + 1);
+				- vientoActual
+				+ gasolinaMinima(posicion + 1, altitud + 1, distancia, viento, gasolinaMinGastada);
 
 	}
 
 	if (altitud > 0) {
 
 		bajada = 20
-				- viento[posicion][9 - altitud]
-				+ gasolinaMinima(posicion + 1, altitud - 1);
+				- vientoActual
+				+ gasolinaMinima(posicion + 1, altitud - 1, distancia, viento, gasolinaMinGastada);
 	}
 
 	if (distancia - posicion > altitud) {
 
 		mant = 30
-			 - viento[posicion][9 - altitud]
-			 + gasolinaMinima(posicion + 1, altitud);
+			 - vientoActual
+			 + gasolinaMinima(posicion + 1, altitud, distancia, viento, gasolinaMinGastada);
 
 	}
 
-	return gasolinaMinGastada[posicion][9 - altitud] = min(subida, min(bajada, mant));
+	return gasolinaMinGastada[9 - altitud][posicion - 1] = min(subida, min(bajada, mant));
 
 }
 
 void resuelve() {
+
+	int distancia;
+	int viento[MAX_ALTITUD][MAX_DIST];
+	int gasolinaMinGastada[MAX_ALTITUD][MAX_DIST]; // filas = altitud, columnas = posición
 
 	int posicion = 0;
 	int altitud = 0;
@@ -66,7 +73,7 @@ void resuelve() {
 
 	memset(gasolinaMinGastada, -1, MAX_ALTITUD * MAX_DIST * sizeof(int));
 
-	cout << gasolinaMinima(posicion, altitud) << "\n\n";
+	cout << gasolinaMinima(posicion, altitud, distancia, viento, gasolinaMinGastada) << "\n\n";
 
 }
 
