@@ -13,7 +13,7 @@ const int MAX_DIST = 1000;
 int gasolinaMinima(int posicion, int altitud, int distancia, int viento[MAX_ALTITUD][MAX_DIST], int gasolinaMinGastada[MAX_ALTITUD][MAX_DIST]) {
 
 	if (posicion == distancia)
-		return viento[9][distancia - 1];
+		return 0;
 
 	int subida = INT_MAX;
 	int mant = INT_MAX;
@@ -22,10 +22,7 @@ int gasolinaMinima(int posicion, int altitud, int distancia, int viento[MAX_ALTI
 	if (posicion != 0 && gasolinaMinGastada[9 - altitud][posicion - 1] != -1)
 		return gasolinaMinGastada[9 - altitud][posicion - 1];
 
-	int vientoActual = 0;
-
-	if (posicion != 0)
-		vientoActual = viento[9 - altitud][posicion - 1];
+	int vientoActual = viento[9 - altitud][posicion];
 
 	if (altitud < 9 && distancia - posicion - 1 > altitud) {
 
@@ -72,6 +69,13 @@ void resuelve() {
 			cin >> viento[i][j];
 
 	memset(gasolinaMinGastada, -1, MAX_ALTITUD * MAX_DIST * sizeof(int));
+
+
+/*	for (int i = 0; i < MAX_ALTITUD; ++i) {
+		for (int j = 0; j < distancia; ++j)
+			cout << viento[i][j] << ' ';
+		cout << '\n';
+	}*/
 
 	cout << gasolinaMinima(posicion, altitud, distancia, viento, gasolinaMinGastada) << "\n\n";
 
