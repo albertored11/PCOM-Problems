@@ -1,41 +1,64 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
 const int MAX_SECTORES = 50;
+const int MAX_VALOR = 500;
+const int INFINITO = 1000;
 
-void mejorTirada(int valor, int numSectores, int sectorActual, int sectores[], vector<int> actual, vector<int> &mejor) {
+int calcularLaMatris(int sector, int valor, vector<int> sectores, int numTiradas[MAX_SECTORES][MAX_VALOR]) {
 
-	if (valor == 0) {
+	if (valor == 0)
+		return numTiradas[sector - 1][valor] = 0;
 
-		if (actual.size() < mejor.size() || mejor.size() == 0)
-			mejor = actual;
-		else if (actual.size() == mejor.size()) {
+	if (sector != 0) {
 
-			int i = 0;
-
-			while (i < actual.size() && actual[i] == mejor[i])
-				++i;
-
-			if (i != actual.size() && actual[i] > mejor[i])
-				mejor = actual;
-
-		}
+		if (valor < sectores[sector - 1])
+			return numTiradas[sector - 1][valor] = calcularLaMatris(sector - 1, valor, sectores, numTiradas);
+		else
+			return numTiradas[sector - 1][valor] = min(calcularLaMatris(sector, valor - sectores[sector - 1], sectores, numTiradas) + 1,
+					   calcularLaMatris(sector - 1, valor, sectores, numTiradas));
 
 	}
+
+	return numTiradas[sector][valor] = INFINITO;
+
+}
+
+void printSolucion(int valor, vector<int> sectores, const int numTiradas[MAX_SECTORES][MAX_VALOR]) {
+
+	/*for (int i = 0; i < sectores.size(); ++i) {
+		for (int j = 0; j < valor + 1; ++j)
+			cout << numTiradas[i][j] << ' ';
+		cout << '\n';
+	}*/
+
+	int sector = sectores.size();
+	int nTiradas = numTiradas[sector - 1][valor];
+
+	if (nTiradas > valor)
+		cout << "Imposible";
 	else {
+		cout << nTiradas << ':';
 
-		for (int i = sectorActual; i < numSectores; ++i) {
-			int tirada = sectores[i];
-			if(tirada <= valor) {
-				actual.push_back(tirada);
-				mejorTirada(valor - tirada, numSectores, i, sectores, actual, mejor);
-				actual.pop_back();
+		while (valor > 0) {
+
+			if (valor >= sectores[sector - 1] && numTiradas[sector - 1][valor - sectores[sector - 1]] == nTiradas - 1) {
+				cout << ' ' << sectores[sector - 1];
+				valor -= sectores[sector - 1];
+				--nTiradas;
 			}
+			else {
+				--sector;
+			}
+
 		}
 
 	}
+
+	cout << '\n';
 
 }
 
@@ -49,29 +72,21 @@ bool resuelve() {
 		return false;
 
 	int numSectores;
-	int sectores[MAX_SECTORES];
+	int numTiradas[MAX_SECTORES][MAX_VALOR];
+	vector<int> sectores;
 	vector<int> actual;
 	vector<int> mejor;
 
 	cin >> numSectores;
 
-	for (int i = 0; i < numSectores; ++i)
-		cin >> sectores[numSectores - i - 1];
-
-	mejorTirada(valor, numSectores, 0, sectores, actual, mejor);
-
-	if (mejor.size() == 0)
-		cout << "Imposible\n";
-	else {
-
-		cout << mejor.size() << ':';
-
-		for (int i = 0; i < mejor.size(); ++i)
-			cout << ' ' << mejor[i];
-
-		cout << '\n';
-
+	for (int i = 0; i < numSectores; ++i) {
+		int sector;
+		cin >> sector;
+		sectores.push_back(sector);
 	}
+
+	calcularLaMatris(numSectores, valor, sectores, numTiradas);
+	printSolucion(valor, sectores, numTiradas);
 
 	return true;
 
