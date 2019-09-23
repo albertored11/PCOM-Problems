@@ -2,6 +2,8 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <cfloat>
+#include <iomanip>
 
 
 /*
@@ -19,6 +21,8 @@ HOLA AMIGOS DEL FUTURO
 
 using namespace std;
 
+const double INFINITO = 3000;//DBL_MAX;
+
 typedef struct {
 	int units;
 	double unitPrice;
@@ -26,7 +30,7 @@ typedef struct {
 
 bool operator<(tPack a, tPack b) {
 
-	return a.unitPrice < b.unitPrice;
+	return a.unitPrice > b.unitPrice;
 
 }
 
@@ -38,7 +42,7 @@ bool operator==(tPack a, tPack b) {
 
 bool operator>(tPack a, tPack b) {
 
-	return a.unitPrice > b.unitPrice;
+	return a.unitPrice < b.unitPrice;
 
 }
 
@@ -68,23 +72,42 @@ vector<int> parseLine(string line) {
 
 }
 
-void createMatrix(int units, set<tPack> packs)
+void printMatrix(const vector<vector<double>> mat) {
 
-void bestDeal(int units, set<tPack> packs) {
+	for (int i = 0; i < mat.size(); ++i) {
+		for (int j = 0; j < mat[i].size(); ++j)
+			cout << mat[i][j] << ' ';
 
-	double price;
-
-	while(units > 0) {
-		set<tPack>::const_iterator best = packs.begin();
-		if(best)
-
-
+		cout << '\n';
 	}
 
+	cout << '\n';
 
 }
 
-bool resuelve() {
+double createMatrix(int pack, int units, vector<tPack> packs, vector<vector<double>> &mejoresPrecios) {
+
+	double mejorPrecio = mejoresPrecios[pack][units];
+
+	printMatrix(mejoresPrecios);
+
+	if (mejorPrecio != -1)
+		return mejorPrecio;
+
+	if (units <= 0)
+		return mejoresPrecios[pack][0] = 0;
+
+	if (pack == 0)
+		return mejoresPrecios[pack][units] = INFINITO;
+
+	double totalPrice = packs[pack - 1].unitPrice * packs[pack - 1].units;
+
+	return mejoresPrecios[pack][units] = min(createMatrix(pack, units - packs[pack - 1].units, packs, mejoresPrecios) + totalPrice,
+			createMatrix(pack - 1, units, packs, mejoresPrecios));
+
+}
+
+bool resuelve(int numCase) {
 
 	double unitPrice;
 
@@ -94,9 +117,10 @@ bool resuelve() {
 		return false;
 
 	int m;
-	set<tPack> packs;
+	set<tPack> packSet;
 	string line;
 	vector<int> testCases;
+	vector<tPack> packs;
 
 	cin >> m;
 
@@ -104,7 +128,7 @@ bool resuelve() {
 
 	p.units = 1;
 	p.unitPrice = unitPrice;
-	packs.emplace(p);
+	packSet.emplace(p);
 
 	for (int i = 0; i < m; ++i) {
 
@@ -112,24 +136,52 @@ bool resuelve() {
 
 		cin >> p.units >> p.unitPrice;
 		p.unitPrice /= p.units;
-		packs.emplace(p);
+		packSet.emplace(p);
 
 	}
 
+	set<tPack>::const_iterator iter = packSet.cbegin();
+
+	while (iter != packSet.cend()) {
+
+		packs.push_back(*iter);
+
+		++iter;
+
+	}
+
+	string dummy;
+
+	getline(cin, dummy);
 	getline(cin, line);
 	testCases = parseLine(line);
 
+	cout << "Case " << numCase << ":\n";
+
 	for (int i = 0; i < testCases.size(); ++i) {
-		cout << "Case " << i + 1 << ":\n";
-		bestDeal(testCases[i], packs);
+
+		vector<vector<double>> mejoresPrecios;
+
+		mejoresPrecios.resize(m + 2);
+
+		for (int j = 0; j < m + 2; ++j)
+			mejoresPrecios[j].resize(testCases[i] + 1, -1);
+
+		createMatrix(m + 1, testCases[i], packs, mejoresPrecios);
+
+		cout << "Buy " << testCases[i] << " for $" << fixed << setprecision(2) << mejoresPrecios[m + 1][testCases[i]] << '\n';
+
 	}
+
 	return true;
 
 }
 
 int main() {
 
-	while (resuelve());
+	int i = 1;
+
+	while (resuelve(i)) ++i;
 
 	return 0;
 
