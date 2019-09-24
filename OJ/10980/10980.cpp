@@ -5,23 +5,9 @@
 #include <cfloat>
 #include <iomanip>
 
-
-/*
-
-HOLA AMIGOS DEL FUTURO
-
- LA MATRIZ GUARDA EN CADA CASILLA EL MEJOR PRECIO PARA COMPRAR J UNIDADES
- CONSIDERANDO LOS PACKS (0..i) ORDENADOS DE MAYOR A MENOR PRECIO UNITARIO
- IGUAL QUE LAS DIANAS
- PENSAR COMO GUARDAR LAS OFERTAS
- GOOD LUCK CRACKS
- EL QUE HA ESCRITO ESTO ES UN GENIO
-
-*/
-
 using namespace std;
 
-const double INFINITO = 3000;//DBL_MAX;
+const double INFINITO = DBL_MAX;
 
 typedef struct {
 	int units;
@@ -87,15 +73,15 @@ void printMatrix(const vector<vector<double>> mat) {
 
 double createMatrix(int pack, int units, vector<tPack> packs, vector<vector<double>> &mejoresPrecios) {
 
+	if (units <= 0)
+		return mejoresPrecios[pack][0] = 0;
+
 	double mejorPrecio = mejoresPrecios[pack][units];
 
-	printMatrix(mejoresPrecios);
+//	printMatrix(mejoresPrecios);
 
 	if (mejorPrecio != -1)
 		return mejorPrecio;
-
-	if (units <= 0)
-		return mejoresPrecios[pack][0] = 0;
 
 	if (pack == 0)
 		return mejoresPrecios[pack][units] = INFINITO;
