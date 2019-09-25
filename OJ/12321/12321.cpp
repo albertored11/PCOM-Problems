@@ -1,5 +1,6 @@
 #include <iostream>
-#include <set>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,10 +13,10 @@ typedef struct {
 
 bool operator<(tIntervalo a, tIntervalo b) {
 
-	if (a.fin == b.fin)
-		return a.ini > b.ini;
+	if (a.ini == b.ini)
+		return a.fin < b.fin;
 
-	return a.fin > b.fin;
+	return a.ini < b.ini;
 
 }
 
@@ -27,10 +28,10 @@ bool operator==(tIntervalo a, tIntervalo b) {
 
 bool operator>(tIntervalo a, tIntervalo b) {
 
-	if (a.fin == b.fin)
-		return a.ini < b.ini;
+	if (a.ini == b.ini)
+		return a.fin > b.fin;
 
-	return a.fin < b.fin;
+	return a.ini > b.ini;
 
 }
 
@@ -43,7 +44,7 @@ bool resuelve() {
 	if (L == 0 && G == 0)
 		return false;
 
-	set<tIntervalo> intervalos;
+	vector<tIntervalo> intervalos;
 
 	for (int i = 0; i < G; ++i) {
 
@@ -61,37 +62,39 @@ bool resuelve() {
 
 		inter.fin = x + r;
 /*
-
 		if (inter.fin > L)
-			inter.fin = L;
-*/
+			inter.fin = L;*/
 
-		intervalos.insert(inter);
+		intervalos.push_back(inter);
 
 	}
 
+	sort(intervalos.begin(), intervalos.end());
+
 	int pos = 0;
 	int numGasCerradas = G;
+	int mayorFin;
+	int i = 0;
 
-	while (pos <= L) {
+	while (pos < L && i < intervalos.size()) {
 
-		set<tIntervalo>::iterator iter = intervalos.begin();
+		mayorFin = -1;
 
-		while (!(iter->ini <= pos && iter->fin >= pos) && iter != intervalos.end())
-			++iter;
+		while (intervalos[i].ini <= pos && i < intervalos.size()) {
+			mayorFin = max(mayorFin, intervalos[i].fin);
+			++i;
+		}
 
-		if (iter == intervalos.end())
+		if (mayorFin == -1)
 			break;
 
-		intervalos.erase(iter);
-
-		pos = iter->fin;
+		pos = mayorFin;
 
 		--numGasCerradas;
 
 	}
 
-	if (pos <= L)
+	if (mayorFin == -1 || pos < L)
 		numGasCerradas = -1;
 
 	cout << numGasCerradas << '\n';
