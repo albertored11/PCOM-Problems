@@ -2,37 +2,49 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include <cstring>
 #include <queue>
+#include <stack>
 
 using namespace std;
 
-void dfs(int origen, int destino, vector<int> &recorrido, vector<int> &mejorRecorrido, vector<bool> &visited, vector<vector<int>> adjListList) {
+bool first = true;
 
-	for (int w : adjListList[origen]) {
+bool bfs(vector<vector<int>> adjList, int origen, int destino, int numCities, vector<int> &pred) {
 
-		if (w == destino) {
+	queue<int> q;
+	vector<bool> visited;
 
-			recorrido.push_back(w);
+	for (int i = 0; i < numCities; ++i) {
+		visited.push_back(false);
+		pred.push_back(-1);
+	}
 
-			if (recorrido.size() < mejorRecorrido.size() || mejorRecorrido.size() == 0)
-				mejorRecorrido = recorrido;
+	visited[origen] = true;
+	q.push(origen);
 
-			recorrido.pop_back();
+	while (!q.empty()) {
 
-			break;
+		int city = q.front();
+		q.pop();
 
-		}
+		for (int city1 : adjList[city]) {
 
-		if (!visited[w]) {
-			visited[w] = true;
-			recorrido.push_back(w);
-			dfs(w, destino, recorrido, mejorRecorrido, visited, adjListList);
-			recorrido.pop_back();
-			visited[w] = false;
+			if (!visited[city1]) {
+
+				visited[city1] = true;
+				pred[city1] = city;
+				q.push(city1);
+
+				if (city1 == destino)
+					return true;
+
+			}
+
 		}
 
 	}
+
+	return false;
 
 }
 
@@ -45,51 +57,73 @@ bool resuelve() {
 	if (!cin)
 		return false;
 
-	vector<vector<int>> adjListList;
+	vector<vector<int>> adjList;
 	vector<string> cities;
 	unordered_map<string, int> cityCode;
-	vector<bool> visited;
+	vector<int> pred;
 	string origen, destino;
-	vector<int> recorrido;
-	vector<int> mejorRecorrido;
 
-	for (int i = 0; i < edges; ++i) {
+	for (int i = 0; i < edges + 1; ++i) {
 
 		string city0, city1;
 
 		cin >> city0 >> city1;
 
 		if (cityCode.count(city0) == 0) {
+			vector<int> v;
 			cityCode.emplace(city0, cities.size());
 			cities.push_back(city0);
+			adjList.push_back(v);
 		}
 
 		if (cityCode.count(city1) == 0) {
+			vector<int> v;
 			cityCode.emplace(city1, cities.size());
 			cities.push_back(city1);
+			adjList.push_back(v);
 		}
 
-		adjListList[cityCode.at(city0)].push_back(cityCode.at(city1));
-		adjListList[cityCode.at(city1)].push_back(cityCode.at(city0));
+		if (i < edges) {
+			adjList[cityCode.at(city0)].push_back(cityCode.at(city1));
+			adjList[cityCode.at(city1)].push_back(cityCode.at(city0));
+		}
+		else {
+			origen = city0;
+			destino = city1;
+		}
 
 	}
 
-	cin >> origen >> destino;
 
-	memset(&visited, 0, cities.size() * sizeof(bool));
+	if (!first)
+		cout << '\n';
+	else
+		first = false;
 
-	dfs(cityCode.at(origen), cityCode.at(destino), recorrido, mejorRecorrido, visited, adjListList);
-
-	if (mejorRecorrido.size() == 0)
+	if (!bfs(adjList, cityCode.at(origen), cityCode.at(destino), cities.size(), pred)) {
 		cout << "No route\n";
+	}
 	else {
 
-		cout << cities[mejorRecorrido[0]];
+		stack<int> s;
 
-		for (int i = 1; i < mejorRecorrido.size() - 1; ++i)
-			cout << ' ' << cities[mejorRecorrido[i]] << '\n' << cities[mejorRecorrido[i]];
+		s.push(cityCode.at(destino));
 
-		cout << cities[mejorRecorrido[mejorRecorrido.size() - 1]];
+		while (pred[s.top()] != -1)
+			s.push(pred[s.top()]);
+
+		cout << cities[s.top()];
+		s.pop();
+
+		while (s.size() > 1) {
+			cout << ' ' << cities[s.top()] << '\n' << cities[s.top()];
+			s.pop();
+		}
+
+		cout << ' ' << cities[s.top()];
+		s.pop();
+
+		cout << '\n';
 
 	}
 
