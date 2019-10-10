@@ -50,12 +50,27 @@ void resuelve() {
 		if (dPrima == d)
 			break;
 
-		if (D > dist[u.first][u.second])
-			continue;
-
 		first = u.first;
 		second = u.second;
 		third = c - (first + second);
+
+		if (first > dPrima && first <= d) {
+			dPrima = first;
+			mejorCoste = dist[first][second];
+		}
+
+		if (second > dPrima && second <= d) {
+			dPrima = second;
+			mejorCoste = dist[first][second];
+		}
+
+		if (third > dPrima && third <= d) {
+			dPrima = third;
+			mejorCoste = dist[first][second];
+		}
+
+		if (D > dist[u.first][u.second])
+			continue;
 
 		if (first > 0) {
 
@@ -70,20 +85,7 @@ void resuelve() {
 
 					dist[first][second] = dist[u.first][u.second] + coste;
 
-					if (first > dPrima && first <= d) {
-						dPrima = first;
-						mejorCoste = dist[first][second];
-					}
 
-					if (second > dPrima && second <= d) {
-						dPrima = second;
-						mejorCoste = dist[first][second];
-					}
-
-					if (third > dPrima && third <= d) {
-						dPrima = third;
-						mejorCoste = dist[first][second];
-					}
 
 					pq.push({dist[first][second], {first, second}});
 
@@ -105,20 +107,6 @@ void resuelve() {
 
 					dist[first][second] = dist[u.first][u.second] + coste;
 
-					if (first > dPrima && first <= d) {
-						dPrima = first;
-						mejorCoste = dist[first][second];
-					}
-
-					if (second > dPrima && second <= d) {
-						dPrima = second;
-						mejorCoste = dist[first][second];
-					}
-
-					if (third > dPrima && third <= d) {
-						dPrima = third;
-						mejorCoste = dist[first][second];
-					}
 
 					pq.push({dist[first][second], {first, second}});
 
@@ -144,20 +132,6 @@ void resuelve() {
 
 					dist[first][second] = dist[u.first][u.second] + coste;
 
-					if (first > dPrima && first <= d) {
-						dPrima = first;
-						mejorCoste = dist[first][second];
-					}
-
-					if (second > dPrima && second <= d) {
-						dPrima = second;
-						mejorCoste = dist[first][second];
-					}
-
-					if (third > dPrima && third <= d) {
-						dPrima = third;
-						mejorCoste = dist[first][second];
-					}
 
 					pq.push({dist[first][second], {first, second}});
 
@@ -180,20 +154,6 @@ void resuelve() {
 					dist[first][second] = dist[u.first][u.second] + coste;
 
 
-					if (first > dPrima && first <= d) {
-						dPrima = first;
-						mejorCoste = dist[first][second];
-					}
-
-					if (second > dPrima && second <= d) {
-						dPrima = second;
-						mejorCoste = dist[first][second];
-					}
-
-					if (third > dPrima && third <= d) {
-						dPrima = third;
-						mejorCoste = dist[first][second];
-					}
 
 					pq.push({dist[first][second], {first, second}});
 
@@ -219,20 +179,6 @@ void resuelve() {
 
 					dist[first][second] = dist[u.first][u.second] + coste;
 
-					if (first > dPrima && first <= d) {
-						dPrima = first;
-						mejorCoste = dist[first][second];
-					}
-
-					if (second > dPrima && second <= d) {
-						dPrima = second;
-						mejorCoste = dist[first][second];
-					}
-
-					if (third > dPrima && third <= d) {
-						dPrima = third;
-						mejorCoste = dist[first][second];
-					}
 
 					pq.push({dist[first][second], {first, second}});
 
@@ -254,20 +200,6 @@ void resuelve() {
 
 					dist[first][second] = dist[u.first][u.second] + coste;
 
-					if (first > dPrima && first <= d) {
-						dPrima = first;
-						mejorCoste = dist[first][second];
-					}
-
-					if (second > dPrima && second <= d) {
-						dPrima = second;
-						mejorCoste = dist[first][second];
-					}
-
-					if (third > dPrima && third <= d) {
-						dPrima = third;
-						mejorCoste = dist[first][second];
-					}
 
 					pq.push({dist[first][second], {first, second}});
 
