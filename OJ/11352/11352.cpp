@@ -1,10 +1,12 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <cstring>
 
 using namespace std;
 
 const int MAX = 100;
+const int INF = 10e6;
 
 int f, c;
 
@@ -22,24 +24,25 @@ bool ok(int i, int j) {
 
 void resuelve() {
 
-	char forest[MAX][MAX];
-	bool visited[MAX][MAX];
+	bool visited[MAX + 1][MAX + 1];
 	pair<int, int> A, B;
 	queue<pair<int, int>> q;
-	int steps;
+	int dist[MAX + 1][MAX + 1];
 
 	cin >> f >> c;
 
 	for (int i = 0; i < f; ++i)
 		for (int j = 0; j < c; ++j)
-			forest[i][j] = false;
+			visited[i][j] = false;
 
 	for (int i = 0; i < f; ++i) {
 		for (int j = 0; j < c; ++j) {
 
-			cin >> forest[i][j];
+			char square;
 
-			if (forest[i][j] == 'Z') {
+			cin >> square;
+
+			if (square == 'Z') {
 
 				visited[i][j] = true;
 
@@ -48,11 +51,11 @@ void resuelve() {
 						visited[i + f_cab[k]][j + c_cab[k]] = true;
 
 			}
-			else if (forest[i][j] == 'A') {
+			else if (square == 'A') {
 				A.first = i;
 				A.second = j;
 			}
-			else if (forest[i][j] == 'B') {
+			else if (square == 'B') {
 				B.first = i;
 				B.second = j;
 			}
@@ -63,7 +66,9 @@ void resuelve() {
 	visited[A.first][A.second] = true;
 	visited[B.first][B.second] = false;
 
-	steps = 0;
+	for (int i = 0; i < f; ++i)
+		for (int j = 0; j < c; ++j)
+			dist[i][j] = INF;
 
 	q.push(A);
 	bool fin = false;
@@ -73,7 +78,6 @@ void resuelve() {
 
 		pair<int, int> square = q.front();
 		q.pop();
-		++steps;
 
 		for (int k = 0; k < 9; ++k) {
 			int ni, nj;
@@ -101,7 +105,7 @@ void resuelve() {
 	if (q.empty())
 		cout << "King Peter, you can't go now!\n";
 	else
-		cout << "Minimal possible length of a trip is " << steps << '\n';
+		cout << "Minimal possible length of a trip is " << '\n';
 
 
 }
