@@ -10,11 +10,11 @@ const int INF = 10e6;
 
 int f, c;
 
-int f_cab[] = {-1, -2, -2, -1, 1, 2, 2, 1};
-int c_cab[] = {-2, -1, 1, 2, 2, 1, -1, -2};
+int f_cab[] = { -1, -2, -2, -1, 1, 2, 2, 1 };
+int c_cab[] = { -2, -1, 1, 2, 2, 1, -1, -2 };
 
-int f_rey[] = {-1, -1, -1, 0, 1, 1, 1, 0};
-int c_rey[] = {-1, 0, 1, 1, 1, 0, -1, -1};
+int f_rey[] = { -1, -1, -1, 0, 1, 1, 1, 0 };
+int c_rey[] = { -1, 0, 1, 1, 1, 0, -1, -1 };
 
 bool ok(int i, int j) {
 
@@ -72,6 +72,7 @@ void resuelve() {
 
 	q.push(A);
 	bool fin = false;
+	dist[A.first][A.second] = 0;
 
 
 	while (!q.empty() && !fin) {
@@ -79,7 +80,7 @@ void resuelve() {
 		pair<int, int> square = q.front();
 		q.pop();
 
-		for (int k = 0; k < 9; ++k) {
+		for (int k = 0; k < 8; ++k) {
 			int ni, nj;
 			ni = square.first + f_rey[k];
 			nj = square.second + c_rey[k];
@@ -88,6 +89,7 @@ void resuelve() {
 			if (ok(ni, nj) && !visited[ni][nj]) {
 
 				visited[ni][nj] = true;
+				dist[ni][nj] = dist[square.first][square.second] + 1;
 
 				q.push(ns);
 
@@ -102,10 +104,10 @@ void resuelve() {
 
 	}
 
-	if (q.empty())
+	if (!fin)
 		cout << "King Peter, you can't go now!\n";
 	else
-		cout << "Minimal possible length of a trip is " << '\n';
+		cout << "Minimal possible length of a trip is " << dist[B.first][B.second] << '\n';
 
 
 }
@@ -116,7 +118,7 @@ int main() {
 
 	cin >> numC;
 
-	while(numC--) resuelve();
+	while (numC--) resuelve();
 
 
 	return 0;
