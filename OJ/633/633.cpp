@@ -13,6 +13,7 @@ int f_cab[] = { -2, -1, 1, 2, 2, 1, -1, -2 };
 int c_cab[] = { 1, 2, 2, 1, -1, -2, -2, -1 };
 
 const int MAX = 40;
+const int INF = 100000;
 
 bool ok(int i, int j, int tam) {
 
@@ -33,7 +34,7 @@ bool resuelve() {
 	ii ini;
 	ii fin;
 	bool visited[MAX + 1][MAX + 1][3];
-	int dist[MAX + 1][MAX + 1];
+	int dist[MAX + 1][MAX + 1][3];
 
 	cin >> ini.first >> ini.second;
 	cin >> fin.first >> fin.second;
@@ -59,13 +60,17 @@ bool resuelve() {
 
 	for (int i = 1; i <= MAX; ++i)
 		for (int j = 1; j <= MAX; ++j)
-			dist[i][j] = 0;
+			for (int k = 0; k < 3; ++k)
+				dist[i][j][k] = INF;
+
+	for (int i = 0; i < 3; ++i)
+		dist[ini.first][ini.second][i] = 0;
 
 	queue<iii> q;
 
 	q.push({ ini, 3 });
 
-	while (!q.empty() && ini != fin && dist[fin.first][fin.second] == 0) {
+	while (!q.empty() && ini != fin/* && dist[fin.first][fin.second] == 100000*/) {
 
 		iii antonio = q.front();
 		q.pop();
@@ -78,7 +83,12 @@ bool resuelve() {
 
 				if (ok(next.first, next.second, tam) && !visited[next.first][next.second][0]) {
 					visited[next.first][next.second][0] = true;
-					dist[next.first][next.second] = dist[antonio.first.first][antonio.first.second] + 1;
+
+					if (antonio.first == ini)
+						dist[next.first][next.second][0] = 1;
+					else
+						dist[next.first][next.second][0] = dist[antonio.first.first][antonio.first.second][antonio.second] + 1;
+
 					q.push({ next,0 });
 				}
 
@@ -93,7 +103,10 @@ bool resuelve() {
 
 				if (ok(next.first, next.second, tam) && !visited[next.first][next.second][1]) {
 					visited[next.first][next.second][1] = true;
-					dist[next.first][next.second] = dist[antonio.first.first][antonio.first.second] + 1;
+					if (antonio.first == ini)
+						dist[next.first][next.second][1] = 1;
+					else
+						dist[next.first][next.second][1] = dist[antonio.first.first][antonio.first.second][antonio.second] + 1;
 					q.push({ next,1 });
 				}
 
@@ -110,7 +123,10 @@ bool resuelve() {
 
 			if (ok(next.first, next.second, tam) && !visited[next.first][next.second][2]) {
 				visited[next.first][next.second][2] = true;
-				dist[next.first][next.second] = dist[antonio.first.first][antonio.first.second] + 1;
+				if (antonio.first == ini)
+					dist[next.first][next.second][2] = 1;
+				else
+					dist[next.first][next.second][2] = dist[antonio.first.first][antonio.first.second][antonio.second] + 1;
 				q.push({ next,2 });
 			}
 
@@ -119,7 +135,10 @@ bool resuelve() {
 
 			if (ok(next.first, next.second, tam) && !visited[next.first][next.second][2]) {
 				visited[next.first][next.second][2] = true;
-				dist[next.first][next.second] = dist[antonio.first.first][antonio.first.second] + 1;
+				if (antonio.first == ini)
+					dist[next.first][next.second][2] = 1;
+				else
+					dist[next.first][next.second][2] = dist[antonio.first.first][antonio.first.second][antonio.second] + 1;
 				q.push({ next,2 });
 			}
 
@@ -127,10 +146,12 @@ bool resuelve() {
 
 	}
 
-	if (q.empty())
+	int res = min(dist[fin.first][fin.second][0], min(dist[fin.first][fin.second][1], dist[fin.first][fin.second][2]));
+
+	if (res == INF)
 		cout << "Solution doesn't exist\n";
 	else
-		cout << "Result : " << dist[fin.first][fin.second] << '\n';
+		cout << "Result : " << res << '\n';
 
 	return true;
 
