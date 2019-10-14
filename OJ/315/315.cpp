@@ -61,18 +61,14 @@ void dfs(int u, int uParent, vii adjList, unordered_set<int> &criticalPlaces) {
 
 			dfs(v, u, adjList, criticalPlaces);
 
-			if (alcanzable[v] >= horaVertice[u]) {
-
-				if (uParent != 0)
+			if (alcanzable[v] >= horaVertice[u] && uParent != 0)
 					criticalPlaces.emplace(u);
 
-				alcanzable[u] = min(alcanzable[u], alcanzable[v]);
-
-			}
-			else
-				alcanzable[u] = min(alcanzable[u], horaVertice[v]);
+			alcanzable[u] = min(alcanzable[u], alcanzable[v]);
 
 		}
+		else
+			alcanzable[u] = min(alcanzable[u], horaVertice[v]);
 
 	}
 
@@ -111,8 +107,13 @@ bool resuelve() {
 
 	hora = 1;
 	hijosRaiz = 0;
-	memset(horaVertice, 0, MAX * sizeof(horaVertice[0]));
-	memset(alcanzable, -1, MAX * sizeof(alcanzable[0]));
+//	memset(horaVertice, 0, MAX * sizeof(horaVertice[0]));
+//	memset(alcanzable, -1, MAX * sizeof(alcanzable[0]));
+
+	for (int i = 0; i < MAX; ++i) {
+		horaVertice[i] = 0;
+		alcanzable[i] = -1;
+	}
 
 	for (int i = 1; i <= N; ++i) {
 
