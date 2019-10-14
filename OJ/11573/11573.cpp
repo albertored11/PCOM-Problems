@@ -74,22 +74,24 @@ int main() {
 
 	int nCasos;
 
-	cin >> f >> c;
+	while (cin >> f >> c) {
 
-	for (int i = 1; i <= f; ++i) {
+		for (int i = 1; i <= f; ++i) {
 
-		string line;
+			string line;
 
-		cin >> line;
+			cin >> line;
 
-		for (int j = 1; j <= c; ++j)
-			grid[i][j] = line[j - 1] - '0';
+			for (int j = 1; j <= c; ++j)
+				grid[i][j] = line[j - 1] - '0';
+
+		}
+
+		cin >> nCasos;
+
+		while (nCasos--) resuelve();
 
 	}
-
-	cin >> nCasos;
-
-	while (nCasos--) resuelve();
 
 	return 0;
 
