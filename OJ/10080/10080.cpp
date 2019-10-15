@@ -19,7 +19,7 @@ double distancia(dd a, dd b) {
 
 }
 
-int aug(int l, vvi adjList) {
+int aug(int l, vvi &adjList) {
 
 	if (vis[l])
 		return 0;
