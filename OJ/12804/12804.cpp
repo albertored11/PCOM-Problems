@@ -3,10 +3,47 @@
 
 using namespace std;
 
+typedef enum {
+	VIRGEN, TOCADO, HUNDIDO
+} tEstado;
+
 using vi = vector<int>;
 using vvi = vector<vi>;
+using vestado = vector<tEstado>;
 
-// buscar ciclos
+vestado estado;
+vvi adjList;
+int numCaso = 1;
+
+void dfs(int u, int lines, bool &hayCiclo, bool &termina) {
+
+	if (hayCiclo && termina)
+		return;
+
+	estado[u] = TOCADO;
+
+	for (int i = 0; i < adjList[u].size(); ++i) {
+
+		if (hayCiclo && termina)
+			return;
+
+		int v = adjList[u][i];
+
+		if (v > lines)
+			termina = true;
+		else if (estado[v] == TOCADO)
+			hayCiclo = true;
+		else
+			dfs(v, lines, hayCiclo, termina);
+
+		if (hayCiclo && termina)
+			return;
+
+	}
+
+	estado[u] = HUNDIDO;
+
+}
 
 void resuelve() {
 
@@ -16,9 +53,11 @@ void resuelve() {
 
 	cin >> lines;
 
-	vvi adjList(lines + 1);
+	estado.assign(lines + 1, VIRGEN);
 
-	for (int i = 0; i < lines; ++i) {
+	adjList.assign(lines + 1, vi());
+
+	for (int i = 1; i <= lines; ++i) {
 
 		cin >> ins;
 
@@ -31,17 +70,25 @@ void resuelve() {
 
 			cin >> next;
 
-			if (next > lines)
-				termina = true;
-
 			adjList[i].push_back(next);
 
 		}
 
 	}
-
+/*
 	if (ins == 'A')
-		termina = true;
+		termina = true;*/
+
+	bool hayCiclo = false;
+	dfs(1, lines, hayCiclo, termina);
+
+	if (!termina)
+		cout << "NEVER\n";
+	else if (hayCiclo)
+		cout << "SOMETIMES\n";
+	else
+		cout << "ALWAYS\n";
+
 
 }
 
@@ -51,7 +98,10 @@ int main() {
 
 	cin >> nCasos;
 
-	while (nCasos--) resuelve();
+	while (nCasos--) {
+		resuelve();
+		++numCaso;
+	}
 
 	return 0;
 
