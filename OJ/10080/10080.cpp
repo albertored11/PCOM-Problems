@@ -24,7 +24,7 @@ int aug(int l, vvi adjList) {
 	if (vis[l])
 		return 0;
 
-	vis[l] = 1;
+	vis[l] = true;
 
 	for (auto r : adjList[l])
 		if (match[r] == -1 || aug(match[r], adjList)) {
@@ -48,10 +48,11 @@ bool resuelve() {
 	int madrig, tiempo, vel;
 	double distanciaMax;
 	vdd listCastores;
-	vdd listMadrig;
 	vvi adjList(castores);
 
 	cin >> madrig >> tiempo >> vel;
+
+	distanciaMax = tiempo * vel;
 
 	for (int i = 0; i < castores; ++i) {
 
@@ -63,22 +64,17 @@ bool resuelve() {
 
 	}
 
-	for (int i = 0; i < madrig; ++i) {
+	for (int j = 0; j < madrig; ++j) {
 
 		dd mad;
 
 		cin >> mad.first >> mad.second;
 
-		listMadrig.push_back(mad);
+		for (int i = 0; i < castores; ++i)
+			if (distancia(listCastores[i], mad) <= distanciaMax)
+				adjList[i].push_back(castores + j);
 
 	}
-
-	distanciaMax = tiempo * vel;
-
-	for (int i = 0; i < castores; ++i)
-		for (int j = 0; j < madrig; ++j)
-			if (distancia(listCastores[i], listMadrig[j]) <= distanciaMax)
-				adjList[i].push_back(j);
 
 	int numSinPareja = castores;
 	match.assign(castores + madrig, -1);
