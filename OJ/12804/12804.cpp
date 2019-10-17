@@ -33,7 +33,7 @@ void dfs(int u, int lines, bool &hayCiclo, bool &termina) {
 			termina = true;
 		else if (estado[v] == TOCADO)
 			hayCiclo = true;
-		else
+		else if (estado[v] == VIRGEN)
 			dfs(v, lines, hayCiclo, termina);
 
 		if (hayCiclo && termina)
