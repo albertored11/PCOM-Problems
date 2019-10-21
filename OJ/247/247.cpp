@@ -4,11 +4,13 @@
 #include <unordered_set>
 #include <string>
 #include <cstring>
+#include <algorithm>
 using namespace std;
 
 using vi = vector<int>;
 using vvi = vector<vi>;
 using vs = vector<string>;
+using vvs = vector<vs>;
 using vus = vector<unordered_set<int>>;
 const int MAX_VERT = 25;
 
@@ -20,6 +22,8 @@ vi alcanzable;
 bool incurrentscc[MAX_VERT];
 int hora;
 vi sccstack;
+vvs solucion;
+
 int nCasos = 1;
 
 
@@ -41,27 +45,20 @@ void scc(int u) {
     if (horaVertice[u] == alcanzable[u]) {
         vi sc;
         int v;
-        bool first = true;
+        vs salida;
 
         do {
             v = sccstack.back();
             sccstack.pop_back();
             sc.push_back(v);
-            incurrentscc[v] = false;
-            
-            if (!first)
-                cout << ", ";
-            else
-                first = false;
-            
-            cout << nombres[v];
+            incurrentscc[v] = false;           
+            salida.push_back(nombres[v]);
+
         } while (u != v);
 
-        cout << '\n';
-
+        sort(salida.begin(), salida.end());
+        solucion.push_back(salida);
     }
-
-
 }
 
 
@@ -100,7 +97,9 @@ bool resuelve() {
     alcanzable.assign(n, -1);
     memset(incurrentscc, 0, sizeof(incurrentscc));
     sccstack.clear();
+    solucion.clear();
     hora = 1;
+
 
     if (nCasos > 1)
         cout << '\n';
@@ -111,6 +110,18 @@ bool resuelve() {
         if(!horaVertice[i])
             scc(i);
 
+    sort(solucion.begin(), solucion.end());
+
+    for (auto a : solucion) {
+        bool first = true;
+        for(auto b : a) {
+            if (!first)
+                cout << ", ";
+            first = false;
+            cout << b;
+        }
+        cout << '\n';
+    }
 
     return true;
 }
