@@ -9,7 +9,7 @@ using iii = pair <int,ii>;
 const int MAX_TAM = 1000;
 bool visitedJOE[MAX_TAM][MAX_TAM];
 bool visitedFIRE[MAX_TAM][MAX_TAM];
-
+int nCasos;
 
 int f_mov [] = {-1, 0, 1, 0};
 int c_mov [] = {0, 1, 0, -1};
@@ -24,14 +24,21 @@ void resuelve() {
 
     cin >> f >> c;
 
-    memset(visitedJOE, 0, sizeof(visitedJOE));    
-    memset(visitedFIRE, 0, sizeof(visitedFIRE));
+    /*memset(visitedJOE, 0, sizeof(visitedJOE));
+    memset(visitedFIRE, 0, sizeof(visitedFIRE));*/
+
+    for (int i = 0; i < f; ++i)
+		for (int j = 0; j < c; ++j) {
+			visitedJOE[i][j] = false;
+			visitedFIRE[i][j] = false;
+		}
+
     queue<iii> joe;
     queue<iii> fire;
     bool fin = false;
 
     for (int i = 0; i < f; ++i)
-        for (int j = 0; i < c; ++j){
+        for (int j = 0; j < c; ++j){
             char square;
             cin >> square;
 
@@ -60,7 +67,7 @@ void resuelve() {
 
             int dist = fire.front().first;
 
-            while(fire.front().first == dist) {
+            while(!fire.empty() && fire.front().first == dist) {
                 iii fuego = fire.front();
                 for (int i = 0; i < 4 ; ++i) {
                     ii next;
@@ -78,7 +85,7 @@ void resuelve() {
 
         int dist = joe.front().first;
 
-        while(joe.front().first == dist) {
+        while(!joe.empty() && joe.front().first == dist) {
             iii joeS = joe.front();
             for(int i = 0; i < 4; ++i) {
                 ii next;
@@ -89,9 +96,8 @@ void resuelve() {
                     return;
                 }
                 else if(!visitedJOE[next.first][next.second]) {
-                    visitedFIRE[next.first][next.second] = true;
                     visitedJOE[next.first][next.second] = true;
-                    fire.push({dist + 1, next});
+                    joe.push({dist + 1, next});
                 }
             }  
             joe.pop();
@@ -103,8 +109,6 @@ void resuelve() {
 
 
 int main() {
-
-    int nCasos;
 
     cin >> nCasos;
 
