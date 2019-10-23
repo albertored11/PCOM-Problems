@@ -15,10 +15,26 @@ bool visited[MAX * MAX * 2];
 int parent[MAX * MAX * 2];
 int cap[MAX * MAX * 2 ][MAX * MAX * 2];
 vvi adjList;
+int X, Y, P;
 
 int f_mov[] = {-1, 0, 1, 0};
 int c_mov[] = {0, 1, 0, -1};
 
+#define in(x, y) 2*Y*x + 2*y
+#define out(x, y) 2*Y*x + 2*y + 1
+#define source 2*X*Y
+#define sink 2*X*Y + 1
+
+void addArista(int u, int v, int capac) {
+
+	if (!cap[u][v] && !cap[v][u]) {
+		adjList[u].push_back(v);
+		adjList[v].push_back(u);
+	}
+
+	cap[u][v] += capac;
+
+}
 
 bool inBounds (int f, int c, ii square) {
     return square.first >= 0 && square.first < f && square.second >= 0 && square.second < c;
@@ -71,14 +87,11 @@ int sendFlow(int s, int t) {
 
 bool resuelve() {
 
-    int X;
-
     cin >> X;
 
     if(!cin)
         return false;
-    
-    int Y, P;
+
     string tablero[MAX];
 
     cin >> Y >> P;
@@ -88,33 +101,29 @@ bool resuelve() {
     
     adjList.assign(X * Y * 2 + 2, vi());
 
+    for (int i = 0; i < X * Y * 2 + 2; ++i)
+		for (int j = 0; j < X * Y * 2 + 2; ++j)
+			cap[i][j] = 0;
+
     for (int i = 0; i < X; ++i)
         for (int j = 0; j < Y; ++j) {
             char square = tablero[i][j];
             if (square != '~') {
 
                 if (square == '*') {
-                    adjList[2*X*Y].push_back(2*Y*i + 2*j);
-                    adjList[2*Y*i + 2*j].push_back(2*Y*i + 2*j + 1);
-                    cap[2*X*Y][2*Y*i + 2*j] = 1;
-                    cap[2*Y*i + 2*j][2*Y*i + 2*j+1] = 1;
+                	addArista(source, in(i, j), 1);
+                	addArista(in(i, j), out(i, j), 1);
                 }
 
-                if (square == '.') {
-                    adjList[2*Y*i + 2*j].push_back(2*Y*i + 2*j + 1);
-                    cap[2*Y*i + 2*j][2*Y*i + 2*j+1] = 1;
-                }
+                if (square == '.')
+					addArista(in(i, j), out(i, j), 1);
 
-                if (square == '@') {
-                    adjList[2*Y*i + 2*j].push_back(2*Y*i + 2*j + 1);
-                    cap[2*Y*i + 2*j][2*Y*i + 2*j+1] = INF;
-                }
+                if (square == '@')
+					addArista(in(i, j), out(i, j), INF);
 
                 if (square == '#') {
-                    adjList[2*Y*i + 2*j + 1].push_back(2*X*Y + 1);
-                    cap[2*Y*i + 2*j + 1][2*X*Y + 1] = P;
-                    adjList[2*Y*i + 2*j].push_back(2*Y*i + 2*j + 1);
-                    cap[2*Y*i + 2*j][2*Y*i + 2*j + 1] = INF;
+					addArista(in(i, j), out(i, j), INF);
+					addArista(out(i, j), sink, P);
                 }
 
                 for (int k = 0; k < 4; ++k) {
@@ -122,10 +131,8 @@ bool resuelve() {
                     next.first += f_mov[k];
                     next.second += c_mov[k];
 
-                    if (inBounds(X, Y, next) && tablero[next.first][next.second] != '~' && tablero[next.first][next.second] != '*') {
-                        adjList[2*Y*i + 2*j + 1].push_back(2*Y*next.first + 2*next.second);
-                        cap[2*Y*i + 2*j + 1][2*Y*next.first + 2*next.second] = INF;
-                    }
+                    if (inBounds(X, Y, next) && tablero[next.first][next.second] != '~' && tablero[next.first][next.second] != '*')
+                    	addArista(out(i, j), in(next.first, next.second), INF);
                 }
 
             }
@@ -134,7 +141,7 @@ bool resuelve() {
     int ret = 0, flow = 0;
 
     do {
-        flow = sendFlow(2*X*Y, 2*X*Y + 1);
+        flow = sendFlow(source, sink);
         ret += flow;
     } while(flow > 0);
 
