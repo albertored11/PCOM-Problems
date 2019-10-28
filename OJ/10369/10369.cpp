@@ -90,21 +90,23 @@ void resuelve() {
 
     init(numPuestos);
 
-    vd aristasBuenas;
-
     for (dii ar : aristas) {
 
-        if (find(ar.second.first) != find(ar.second.second)) {
-            merge(ar.second.first, ar.second.second);
-            aristasBuenas.push_back(ar.first);
-        }
+        if (find(ar.second.first) != find(ar.second.second))
+        	merge(ar.second.first, ar.second.second);
 
-        if (numSets == 1)
-            break;
+        if (numSets == numSat) {
+
+        	cout << fixed << setprecision(2) << ar.first << '\n';
+
+			break;
+
+		}
+
 
     }
 
-    cout << fixed << setprecision(2) << aristasBuenas[aristasBuenas.size() - numSat] << '\n';
+//    cout << fixed << setprecision(2) << aristasBuenas[] << '\n';
 
 }
 
