@@ -8,7 +8,7 @@
             "name": "(gdb) Iniciar",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/OJ/796/a.out",
+            "program": "${workspaceFolder}/OJ/10369/a.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
