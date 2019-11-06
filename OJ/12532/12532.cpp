@@ -11,6 +11,8 @@ class SegmentTree {
 
     public:
 
+//	vector<int> st;
+
         // Tamaño máximo que podremos guardar (número de hojas).
         // Antes de las consultas, se necesita rellenar con los datos iniciales usando build().
 
@@ -29,7 +31,7 @@ class SegmentTree {
         int query(int vertex, int L, int R, int i, int j) {
 
             if (i > R || j < L)
-                return 0;
+                return 1;
 
             if (L >= i && R <= j)
                 // Segmento completamente dentro de la consulta
@@ -49,7 +51,7 @@ class SegmentTree {
 
         void update(int vertex, int l, int r, int pos, int newVal) {
 
-            if ((pos < 1) || (r < pos))
+            if ((pos < l) || (r < pos))
                 return;
 
             if (l == r) {
@@ -72,14 +74,14 @@ class SegmentTree {
             else
                 update(2 * vertex + 1, m + 1, r, pos, newVal);
 
-            int val = st[2 * vertex] * st[2 * vertex + 1];
+            st[vertex] = st[2 * vertex] * st[2 * vertex + 1];
 
-            if (val > 0)
+            /*if (val > 0)
                 st[vertex] = 1;
             else if (val < 0)
                 st[vertex] = -1;
             else
-                st[vertex] = 0;            
+                st[vertex] = 0;*/
 
         }
 
@@ -108,17 +110,17 @@ class SegmentTree {
 
             int m = (l + r) / 2;
 
-            build(values, 2 * l, l, m);
-            build(values, 2 * l + 1, m + 1, r);
+            build(values, 2 * p, l, m);
+            build(values, 2 * p + 1, m + 1, r);
 
-            int val = st[2 * l] * st[2 * l + 1];
+            st[p] = st[2 * p] * st[2 * p + 1];
 
-            if (val > 0)
+            /*if (val > 0)
                 st[p] = 1;
             else if (val < 0)
                 st[p] = -1;
             else
-                st[p] = 0;             
+                st[p] = 0;  */
 
         }
 
@@ -145,34 +147,38 @@ bool resuelve() {
 
     f.build(values, N);
 
-    string operation;
+    for (int i = 0; i < K; ++i) {
 
-    cin >> operation;
-
-    while (operation != "END") {
-
+		string operation;
         int a, b;
 
+		cin >> operation;
         cin >> a >> b;
 
-        if (operation == "C")
-            f.update(a, b);
-        else {
+        if (operation == "C") {
+			if (a > 0 && a <= N)
+				f.update(a - 1, b);
+		}
+        else if (operation == "P") {
 
-            int val = f.query(a, b);
+        	if (a > 0 && a <= N && b > 0 && b <= N) {
 
-            if (val == 1)
-                cout << '+';
-            else if (val == -1)
-                cout << '-';
-            else
-                cout << 0;
+				int val = f.query(a - 1, b - 1);
+
+				if (val == 1)
+					cout << '+';
+				else if (val == -1)
+					cout << '-';
+				else
+					cout << 0;
+
+			}
 
         }
 
-        cin >> operation;
-
     }
+
+    cout << '\n';
 
     return true;
 
