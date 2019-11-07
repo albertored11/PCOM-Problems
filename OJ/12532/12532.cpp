@@ -140,7 +140,7 @@ bool resuelve() {
     cin >> K;
 
     SegmentTree f(N);
-    int values[10001];
+    int values[100001];
 
     for (int i = 0; i < N; ++i)
         cin >> values[i];
