@@ -1,103 +1,132 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <queue>
+#include <unordered_set>
 using namespace std;
 
-using ii = pair<int,int>;
-using vii = vector<ii>;
+using ii = pair<int, int>;
+using vb = vector<bool>;
 using vi = vector<int>;
+using vii = vector<ii>;
+using iii = pair<ii, int>;
+using viii = vector<iii>;
 
 const int INF = 10e6;
-const int MAX_BEEP_BIN = 1024;
-const int MAX_CAS = 11;
+const int MAX_BEEP = 12;
+const int MAX_COMB = 4096;
 
 int nCasos;
 int X, Y, nBeep;
 ii ini;
 vii beepers;
-vi dist;
-int mat[MAX_BEEP_BIN][MAX_CAS];
-
-bool contiene(ii a) {
-    int i = 0;
-
-    while(i < beepers.size() && beepers[i] != a)
-        ++i;
-
-    return i < beepers.size();
-}
-
+int dist[MAX_BEEP][MAX_COMB];
 
 int manhattan(ii a, ii b) {
 
-    return abs(a.first - b.first) + abs(a.second + b.second);
+    return abs(a.first - b.first) + abs(a.second - b.second);
 
 }
 
-int f(int i, int j) {
+bool contiene(ii pos) {
 
-    int *ret = &mat[i][j];
+	for (ii bee : beepers)
+		if (bee == pos)
+			return true;
 
-    if (*ret != INF)
-        return *ret;
-
-    int beepBin = i;
-
-    if (beepBin == 0)
-        *ret = manhattan(ini, beepers[j]);
-    else {
-
-        for (int k = 0; k < beepers.size(); ++k) {
-
-            if (beepBin % 2 == 1)
-                *ret = min(*ret, f(i - (1 << k), k) + manhattan(beepers[i], beepers[k]));
-
-            beepBin /= 2;
-
-        }
-
-    }
-
-    return *ret;
+	return false;
 
 }
 
-void resuelve() {    
+void resuelve() {
+
+	int nBeepReal;
 
     cin >> X >> Y;
 
     cin >> ini.first >> ini.second >> nBeep;
 
-    beepers.clear();    
+    beepers.clear();
 
-    for (int i = 0; i < MAX_BEEP_BIN; ++i)
-        for (int j = 0; j < MAX_CAS; ++j)
-            mat[i][j] = INF;
+    beepers.push_back(ini);
 
     for (int i = 0; i < nBeep; ++i) {
 
-        ii beep;
-        cin >> beep.first >> beep.second;
-        if (!contiene(beep))
-            beepers.push_back(beep);
+		ii bee;
 
-        mat[(1 << i)][i] = manhattan(ini, beep);
+		cin >> bee.first >> bee.second;
+
+		if (!contiene(bee) && bee != ini)
+			beepers.push_back(bee);
 
     }
 
-    dist.assign(beepers.size(), INF);
+    beepers.push_back(ini);
 
-    cout << "The shortest path has length " << f((1 << beepers.size()) - 1, beepers.size()) << '\n';    
+    nBeep = beepers.size() - 2;
+
+    for (int i = 0; i < MAX_BEEP; ++i)
+    	for (int j = 0; j < MAX_COMB; ++j)
+    		dist[i][j] = INF;
+
+    dist[0][1] = 0;
+
+	priority_queue<iii, viii, greater<iii>> pq;
+	int todosRecogidos = (1 << (nBeep + 1)) - 1;
+	int final = (1 << (nBeep + 2)) - 1;
+
+    pq.push({{0, 0}, 1});
+
+	while (!pq.empty()) {
+
+		iii front = pq.top();
+		pq.pop();
+
+		int d = front.first.first;
+		int u = front.second;
+		int index = front.first.second;
+
+		if (index == nBeep + 1)
+			break;
+
+		if (d > dist[index][u])
+			continue;
+
+		if (u == todosRecogidos && dist[index][u] + manhattan(beepers[index], ini) < dist[beepers.size() - 1][final]) {
+			dist[beepers.size() - 1][final] = dist[index][u] + manhattan(beepers[index], ini);
+			pq.push({{dist[beepers.size() - 1][final], nBeep + 1}, final});
+		}
+
+		int visited = u / 2;
+
+		for (int i = 1; i <= nBeep; ++i) {
+
+			ii bind = beepers[index];
+			ii bi = beepers[i];
+
+			int manh = abs(bind.first - bi.first) + abs(bind.second - bi.second);
+
+			if (visited % 2 == 0 && dist[index][u] + manh < dist[i][u + (1 << i)]) {
+				dist[i][u + (1 << i)] = dist[index][u] + manh;
+				pq.push({{dist[i][u + (1 << i)], i}, u + (1 << i)});
+			}
+
+			visited /= 2;
+
+		}
+
+	}
+
+	cout << "The shortest path has length " << dist[beepers.size() - 1][final] << '\n';
 
 }
 
 
-int main() {    
+int main() {
 
     cin >> nCasos;
 
     while(nCasos--)resuelve();
-
 
     return 0;
 }
