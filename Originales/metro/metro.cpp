@@ -216,6 +216,8 @@ bool resuelve() {
 
         }
 
+        // TODO comentar a partir de aquí
+
         camino.push(destino);
 
         int pred = parent[destino];
