@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -8,8 +9,20 @@ using vi = vector<int>;
 using ii = pair<int, int>;
 using vii = vector<ii>;
 using vvii = vector<vii>;
+using si = stack<int>;
 
 const int INF = 10e6;
+
+int linea(int estacion, const vi &primeraEstacionLinea, int numLineas) {
+
+    int ret = 0;
+
+    while (ret < numLineas - 1 && primeraEstacionLinea[ret + 1] <= estacion)
+        ++ret;
+
+    return ret;
+
+}
 
 int numAristas(int numLineas) {
 
@@ -32,6 +45,8 @@ bool resuelve() {
     vi primeraEstacionLinea;
     vvii adjList;
     vi dist;
+    vi parent;
+    si camino;
 
     // Leer número de líneas.
     cin >> numLineas;
@@ -176,6 +191,7 @@ bool resuelve() {
         priority_queue<ii, vii, greater<ii>> pq;
 
         dist.assign(adjList.size(), INF);
+        parent.assign(adjList.size(), -1);
         dist[origen] = 0;
         pq.push({0, origen});
 
@@ -193,13 +209,47 @@ bool resuelve() {
             for (auto a : adjList[u]) {
                 if (dist[u] + a.first < dist[a.second]) {
                     dist[a.second] = dist[u] + a.first;
+                    parent[a.second] = u;
                     pq.push({dist[a.second], a.second});
                 }
             }
 
         }
 
-        cout << "El tiempo total de trayecto es de " << dist[destino] << " minutos.\n";
+        camino.push(destino);
+
+        int pred = parent[destino];
+
+        while (pred != -1) {
+            camino.push(pred);
+            pred = parent[pred];
+        }
+
+        int contEstacionesLinea = 1;
+        int lineaActual = linea(camino.top(), primeraEstacionLinea, numLineas);
+
+        cout << "L" << lineaActual;
+        camino.pop();
+
+        while (!camino.empty()) {
+
+            int nuevaLinea = linea(camino.top(), primeraEstacionLinea, numLineas);
+
+            if (nuevaLinea == lineaActual)
+                ++contEstacionesLinea;
+            else {
+                lineaActual = nuevaLinea;
+                cout << " (" << contEstacionesLinea << ") -> L" << lineaActual;
+                contEstacionesLinea = 1;
+            }
+
+            camino.pop();
+
+        }
+
+        cout << " (" << contEstacionesLinea << ")\n";
+
+        cout << "Total: " << dist[destino] << " min\n";
 
     }
 
