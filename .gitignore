@@ -38,3 +38,6 @@ CMakeLists.txt
 
 # Input files
 *.in
+
+# Exceptions
+!Originales/metro/sample.*
