@@ -26,10 +26,12 @@ using vvii = vector<vii>;
 using ss = pair<string, string>;
 using vss = vector<ss>;
 
-int cats, dogs, voters, dogVoters;
+int cats, dogs, voters, dogVoters, catVoters;
 vvi adjList;
 vss votes;
 vi match, vis;
+
+const int MAX_VOTERS = 500;
 
 int aug(int l) {
 
@@ -53,9 +55,10 @@ void resuelve() {
     cin >> cats >> dogs >> voters;
 
     dogVoters = 0;
+    catVoters = 0;
 
-    adjList.assign(voters, vi());
-    votes.clear();
+    adjList.assign(2 * MAX_VOTERS, vi());
+    votes.assign(2 * MAX_VOTERS, ss());
 
     for (int i = 0; i < voters; ++i) {
 
@@ -63,26 +66,47 @@ void resuelve() {
 
     	cin >> vote.first >> vote.second;
 
-    	if (vote.first[0] == 'D')
-			++dogVoters;
+    	if (vote.first[0] == 'D') {
 
-    	for (int j = 0; j < votes.size(); ++j) {
+            for (int j = MAX_VOTERS; j < MAX_VOTERS + catVoters; ++j) {
 
-    		if (vote.first == votes[j].second || vote.second == votes[j].first) {
+                if (vote.first == votes[j].second || vote.second == votes[j].first) {
 
-    			adjList[i].push_back(j);
-				adjList[j].push_back(i);
+                    adjList[dogVoters].push_back(j);
+                    adjList[j].push_back(dogVoters);
 
-    		}
+                }
+
+            }
+
+            votes[dogVoters] = vote;
+
+            ++dogVoters;
 
     	}
+    	else {
 
-    	votes.push_back(vote);
+            for (int j = 0; j < dogVoters; ++j) {
+
+                if (vote.first == votes[j].second || vote.second == votes[j].first) {
+
+                    adjList[MAX_VOTERS + catVoters].push_back(j);
+                    adjList[j].push_back(MAX_VOTERS + catVoters);
+
+                }
+
+            }
+
+            votes[MAX_VOTERS + catVoters] = vote;
+
+            ++catVoters;
+
+    	}
 
     }
 
 	int mcbm = 0;
-	match.assign(voters, -1);
+	match.assign(2 * MAX_VOTERS, -1);
 
 	for (int l = 0; l < dogVoters; l++) {
 		vis.assign(dogVoters, 0);
