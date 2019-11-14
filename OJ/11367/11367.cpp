@@ -11,7 +11,7 @@ using vvii = vector<vii>;
 using iii = pair<int, ii>;
 using viii = vector<iii>;
 
-const int INF = 10e6;
+const int INF = 10e8;
 const int MAX_CAP = 102;
 const int MAX_CITIES = 1002;
 
@@ -32,7 +32,7 @@ void resuelve() {
 		return;
 	}
 
-	for (int i = 0; i < cap; ++i)
+	for (int i = 0; i <= cap; ++i)
 		for (int j = 0; j < numCities; ++j)
 			dist[i][j] = INF;
 
@@ -59,21 +59,16 @@ void resuelve() {
 		if (d > dist[comb][u])
 			continue;
 
+        if (comb < cap && dist[comb][u] + prices[u] < dist[comb + 1][u]) {
+            dist[comb + 1][u] = dist[comb][u] + prices[u];
+            pq.push({dist[comb + 1][u], {comb + 1, u}});
+        }
+
 		for (auto a : adjList[u]) {
 
-			if (cap >= a.first) {
-
-				for (int i = max(0, a.first - comb); i <= cap - comb; ++i) {
-
-					if (dist[comb][u] + i * prices[u] < dist[comb + i - a.first][a.second]) {
-
-						dist[comb + i - a.first][a.second] = dist[comb][u] + i * prices[u];
-						pq.push({dist[comb + i - a.first][a.second], {comb + i - a.first, a.second}});
-
-					}
-
-				}
-
+			if (comb >= a.first && dist[comb][u] < dist[comb - a.first][a.second]) {
+                dist[comb - a.first][a.second] = dist[comb][u];
+                pq.push({dist[comb - a.first][a.second], {comb - a.first, a.second}});
 			}
 
 		}
@@ -86,9 +81,9 @@ void resuelve() {
 
 int main() {
 
-	cin >> numCities >> numRoads;
+    cin >> numCities >> numRoads;
 
-	for (int i = 0; i < numCities; ++i) {
+    for (int i = 0; i < numCities; ++i) {
 
 		int pr;
 
