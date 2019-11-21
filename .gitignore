@@ -33,7 +33,6 @@
 
 # CLion files and directories
 CMakeLists.txt
-CMakeLists_template.txt
 /.idea/*
 /cmake-build-debug/*
 
