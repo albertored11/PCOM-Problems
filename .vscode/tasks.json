@@ -10,8 +10,8 @@
             "args": [
                 "-g",
                 "-o",
-                "${workspaceFolder}/OJ/10369/a.out",
-                "${workspaceFolder}/OJ/10369/*.cpp"
+                "${workspaceFolder}/OJ/12176/a.out",
+                "${workspaceFolder}/OJ/12176/*.cpp"
             ],
             "problemMatcher": []
         }
