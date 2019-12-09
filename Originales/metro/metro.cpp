@@ -13,6 +13,7 @@ using si = stack<int>;
 
 const int INF = 10e6;
 
+// Devuelve el número de línea al que pertenece una estación.
 int linea(int estacion, const vi &primeraEstacionLinea, int numLineas) {
 
     int ret = 0;
@@ -24,6 +25,10 @@ int linea(int estacion, const vi &primeraEstacionLinea, int numLineas) {
 
 }
 
+/*
+ * Devuelve el número de transbordos que hay en función del número de líneas que
+ * coinciden en una estación.
+ */
 int numAristas(int numLineas) {
 
     if (numLineas == 2)
@@ -36,7 +41,6 @@ int numAristas(int numLineas) {
 
 }
 
-// TODO separar la definición de las consultas.
 bool resuelve() {
 
     int numLineas;
@@ -59,8 +63,6 @@ bool resuelve() {
 
     // Leer tiempos de trayecto entre estaciones para cada línea.
     for (int i = 0; i < numLineas; ++i) {
-
-        // TODO hacerlo sin la variable estacion.
 
         int tiempo;
         bool primeraEstacion = true;
@@ -216,42 +218,60 @@ bool resuelve() {
 
         }
 
-        // TODO comentar a partir de aquí
+        if (dist[destino] == INF)
+            cout << "Haberte levantado antes, Antonio.\n";
+        else {
 
-        camino.push(destino);
+            // Ir metiendo en la pila las estaciones del camino.
+            camino.push(destino);
 
-        int pred = parent[destino];
+            int pred = parent[destino];
 
-        while (pred != -1) {
-            camino.push(pred);
-            pred = parent[pred];
-        }
-
-        int contEstacionesLinea = 1;
-        int lineaActual = linea(camino.top(), primeraEstacionLinea, numLineas);
-
-        cout << "L" << lineaActual;
-        camino.pop();
-
-        while (!camino.empty()) {
-
-            int nuevaLinea = linea(camino.top(), primeraEstacionLinea, numLineas);
-
-            if (nuevaLinea == lineaActual)
-                ++contEstacionesLinea;
-            else {
-                lineaActual = nuevaLinea;
-                cout << " (" << contEstacionesLinea << ") -> L" << lineaActual;
-                contEstacionesLinea = 1;
+            while (pred != -1) {
+                camino.push(pred);
+                pred = parent[pred];
             }
 
+            // Número de estaciones que se llevan recorridas por la línea actual.
+            int contEstacionesLinea = 1;
+
+            // Calcular línea actual.
+            int lineaActual = linea(camino.top(), primeraEstacionLinea, numLineas);
+
+            cout << "L" << lineaActual;
             camino.pop();
 
+            while (!camino.empty()) {
+
+                // Calcular línea de la siguiente estación.
+                int nuevaLinea = linea(camino.top(), primeraEstacionLinea, numLineas);
+
+                /*
+                 * Si se sigue en la misma línea, incrementar el número de
+                 * estaciones recorridas de esa línea.
+                 */
+                if (nuevaLinea == lineaActual)
+                    ++contEstacionesLinea;
+                    /*
+                     * Si no, actualizar la línea, imprimir el número de estaciones
+                     * recorridas de la línea anterio y reinicializar el contador de
+                     * estaciones de la línea.
+                     */
+                else {
+                    lineaActual = nuevaLinea;
+                    cout << " (" << contEstacionesLinea << ") -> L" << lineaActual;
+                    contEstacionesLinea = 1;
+                }
+
+                camino.pop();
+
+            }
+
+            cout << " (" << contEstacionesLinea << ")\n";
+
+            cout << "Total: " << dist[destino] << " min\n";
+
         }
-
-        cout << " (" << contEstacionesLinea << ")\n";
-
-        cout << "Total: " << dist[destino] << " min\n";
 
     }
 

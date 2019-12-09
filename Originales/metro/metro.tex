@@ -1,0 +1,67 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[left=1in,top=1in,right=1in,bottom=1in]{geometry}
+%\usepackage{parskip}
+
+\title{Lost in Beijing Subway}
+\author{Gonzalo Agudo Florián, Alberto Redondo Gil}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+Antonio ha decidido tomarse unas vacaciones después de haber pasado meses preparándose para un concurso de programación muy importante. El destino que ha elegido ha sido Pekín, pero no sabe nada de chino y, por lo tanto, ha decidido moverse andando por la ciudad para no tener que coger el metro, ya que todas las indicaciones están en chino y le resulta imposible aclararse con este idioma. Sin embargo, en su último día de viaje, cuando tenía que volver al aeropuerto para coger el avión de vuelta a casa, Antonio se queda dormido y no le da tiempo a ir andando hasta allí. Muy a su pesar, ha de coger el metro. Aunque no pueda entender el idioma, Antonio es muy bueno contando el número de estaciones por las que ha pasado cuando va en tren.
+
+Tu tarea es escribir un programa que, dada la descripción de una red de metro y la estación de origen y la de destino, encuentre el camino más corto entre ellas, sin indicar sus nombres, sino las líneas por las que pasa, el número de estaciones que recorre en cada línea y el tiempo total del trayecto.
+
+\section*{Entrada}
+
+En la entrada aparecerán diferentes configuraciones de redes de metro y de trayectos. El último caso comenzará con un \textit{0} y no deberá procesarse.
+
+Para cada caso de prueba, en primer lugar, se indica el número \(L\) de líneas de la red de metro, con \(1 \leq L \leq 100\). Las siguientes \(L\) líneas corresponden a los tiempos entre estaciones, con el siguiente formato: si la línea tiene \(E\) estaciones, con \(2 \leq E \leq 500\), aparecerán \(E - 1\) números y un \(0\) al final. Cada número \(t_i\) corresponderá al tiempo (en minutos) que se tarda en ir de la estación \(i\) a la estación \(i + 1\). A continuación, aparecerá el número \(C\), de correspondencias entre líneas. Una misma estación no aparecerá en dos correspondencias distintas. Para cada correspondencia, aparecerán en primer lugar \(L\) números. Cada número \(l_i\) corresponderá al número de estación de la línea \(i\) en la que hay correspondencia. Si en alguna línea no hay correspondencia en ese caso, aparecerá un \(-1\). Como mucho, podrán coincidir 4 líneas en una misma estación. Las siguientes líneas especifican los tiempos de transbordo entre cada par de líneas involucradas en esa correspondencia, con el formato \(L1\) \(L2\) \(t\), siendo \(L1\) y \(L2\) las líneas en cuestión y \(t\) el tiempo de transbordo. Las conexiones son bidireccionales, por lo que una vez especificada la conexión entre las líneas \(A\) y \(B\), no hará falta especificar la conexión entre \(B\) y \(A\). Por último, aparecerá el número de consultas \(Q\), con \(1 \leq Q \leq 200\), seguido de \(Q\) líneas con cuatro números \(l_o\) \(e_o\) \(l_d\) \(e_d\), que se corresponderán, respectivamente, con la línea de la estación origen, la estación origen en esa línea, la línea de la estación destino y la estación destino en esa línea.
+
+Las líneas estarán numeradas entre \(0\) y \(L - 1\), y las estaciones, para cada línea, entre \(0\) y \(E_i - 1\), siendo \(E_i\) el número de estaciones de la línea \(i\).
+
+Puede ocurrir que no sea posible ir de una estación de una línea a otra de otra distinta.
+
+\section*{Salida}
+
+Para cada caso de prueba, se mostrará el número de cada línea por la que se pasa, y para cada línea, el número de estaciones que se recorren. También se mostrará el tiempo total del trayecto.
+
+Si no posible realizar ese trayecto a través de la red de metro, se mostrará el mensaje ``Haberte levantado antes, Antonio.''.
+
+En el apartado de salida de ejemplo se puede ver el formato exacto de la salida.
+
+\medskip
+
+Aclaración: también hay que tener en cuenta, sicorresponde, el tiempo de transbordo entre líneas en la estación de origen y en la de destino.
+
+\section*{Entrada de ejemplo}
+
+\begin{verbatim}
+3
+5 3 1 3 4 2 0
+3 2 3 1 0
+7 0
+2
+1 2 -1
+0 1 2
+6 -1 1
+0 2 1
+1
+1 1 2 0
+0
+\end{verbatim}
+
+\section*{Salida de ejemplo}
+
+\begin{verbatim}
+L1 (2) -> L0 (6) -> L2 (2)
+Total: 25 min
+\end{verbatim}
+
+
+\end{document}
