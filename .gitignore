@@ -39,5 +39,10 @@ CMakeLists.txt
 # Input files
 *.in
 
+# Other filetypes
+*.aux
+*.log
+*.pdf
+
 # Exceptions
 !Originales/metro/sample.*
