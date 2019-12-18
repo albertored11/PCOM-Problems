@@ -1,3 +1,5 @@
+// Autores: Gonzalo Agudo Florián, Alberto Redondo Gil
+
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -11,6 +13,7 @@ using vii = vector<ii>;
 using vvii = vector<vii>;
 using si = stack<int>;
 
+bool primerCaso;
 const int INF = 10e6;
 
 // Devuelve el número de línea al que pertenece una estación.
@@ -51,13 +54,18 @@ bool resuelve() {
     vi dist;
     vi parent;
     si camino;
-
+    
     // Leer número de líneas.
     cin >> numLineas;
 
     // Si se lee un 0, terminar la ejecución.
     if (numLineas == 0)
         return false;
+    
+    if (!primerCaso)
+        cout << '\n';
+    else
+        primerCaso = false;
 
     int estacion = 0;
 
@@ -189,7 +197,6 @@ bool resuelve() {
         destino = primeraEstacionLinea[destinoLinea] + destinoEstacion;
 
         // Aplicar el algoritmo de Dijkstra.
-
         priority_queue<ii, vii, greater<ii>> pq;
 
         dist.assign(adjList.size(), INF);
@@ -274,13 +281,16 @@ bool resuelve() {
         }
 
     }
-
+    
+    
     return true;
 
 }
 
 int main() {
-
+    
+    primerCaso = true;
+    
     while (resuelve());
 
     return 0;
