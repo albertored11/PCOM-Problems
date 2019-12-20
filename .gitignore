@@ -43,6 +43,7 @@ CMakeLists.txt
 *.aux
 *.log
 *.pdf
+*.zip
 
 # Exceptions
 !Originales/metro/sample.*
